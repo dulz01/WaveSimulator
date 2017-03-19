@@ -4,6 +4,9 @@
 //
 // Modular Framework for OpenGLES2 rendering on multiple platforms.
 //
+
+#include "water_surface.h"
+
 namespace octet {
   /// Scene containing a box with octet.
   class example_waves : public app {
