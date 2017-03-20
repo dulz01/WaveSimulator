@@ -18,6 +18,7 @@ namespace octet {
         maxRangeX = x - 1;
         maxRangeY = y - 1;
 
+        // converting to screen space range
         tempX = (maxRangeX * -1 - 0 * 1) / maxRangeX + tempX * screenRange / maxRangeX;
         tempY = (maxRangeY * -1 - 0 * 1) / maxRangeY + tempY * screenRange / maxRangeY;
 

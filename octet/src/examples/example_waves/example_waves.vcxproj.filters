@@ -428,6 +428,7 @@
       <Filter>containers</Filter>
     </ClInclude>
     <ClInclude Include="example_waves.h" />
+    <ClInclude Include="water_surface.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\resources\mesh_builder.inl">
