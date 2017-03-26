@@ -45,6 +45,18 @@ namespace octet {
       // Rotate camera - Y axis
       if (is_key_down('C')) { camera.rotateY(speed); }
       if (is_key_down('V')) { camera.rotateY(-speed); }
+
+      // Set wireframe on or off
+      static bool wireframe = false;
+      if (is_key_going_down(' ')) {
+        wireframe = !wireframe;
+        if (wireframe) {
+          glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else {
+          glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+      }
     }
 
     /// this is called once OpenGL is initialized
