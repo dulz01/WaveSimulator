@@ -93,6 +93,10 @@ namespace octet {
 
       waves.AnimateWaves(time+= 1.0f / 30);
 
+      if (time > 30) {
+        time = 0;
+      }
+
       // draw the scene
       app_scene->render((float)vx / vy);
 

@@ -7,10 +7,18 @@ namespace octet {
       uint32_t color;
     };
     
+    // Mesh variables
     int sizeX, sizeZ;
     ref<mesh> water_mesh;
-    std::vector<vec3p> water_plane;
+    std::vector<vec3> water_plane;
     std::vector<uint32_t> indices;
+
+    // Wave variables
+    float height = 0.0f;
+    float pi = 3.141592653f;
+    float wavelength, amplitude, speed, frequency, phase;
+
+    vec2 direction;
 
     // this function converts three floats into a RGBA 8 bit color
     static uint32_t make_color(float r, float g, float b) {
@@ -67,13 +75,18 @@ namespace octet {
       gl_resource::wolock vl(water_mesh->get_vertices());
       my_vertex *vtx = (my_vertex *)vl.u8();
 
-      float height = -1.0f;
+      wavelength = 16;
+      amplitude = 0.4f;
+      speed = 1.0f;
+      direction = vec2();
+      frequency = (2 * pi) / wavelength;
+      phase = speed * frequency;
+
       for (int i = 0; i < water_plane.size(); ++i) {
         float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
-        water_plane[i] = vec3p((i % sizeX), height, (i / sizeX));
-        height += 0.1f;
 
-        if (height >= 2) { height = 0; }
+        height = amplitude * sinf(pi * direction.dot(vec2(i % sizeX, i / sizeX)) * frequency + time * phase);
+        water_plane[i] = vec3p((i % sizeX), height , (i / sizeX));
 
         vtx->pos = water_plane[i];
         vtx->color = make_color(r, g, b);
