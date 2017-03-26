@@ -6,21 +6,32 @@ namespace octet {
       vec3p pos;
       uint32_t color;
     };
+    
+    int sizeX, sizeZ;
+    ref<mesh> water_mesh;
+    std::vector<vec3p> water_plane;
+    std::vector<uint32_t> indices;
 
     // this function converts three floats into a RGBA 8 bit color
     static uint32_t make_color(float r, float g, float b) {
       return 0xff000000 + ((int)(r*255.0f) << 0) + ((int)(g*255.0f) << 8) + ((int)(b*255.0f) << 16);
     }
 
-    ref<mesh> water_mesh;
-    std::vector<vec3p> water_plane;
-    std::vector<uint32_t> indices;
+  public:
+    water_surface() {}
+    water_surface(int xSize, int zSize) : sizeX(xSize), sizeZ(zSize) {}
+
+    ref<mesh> Get_Mesh() {
+      return water_mesh;
+    }
 
     void init(int xSize = 100, int zSize = 100) {
       water_mesh = new mesh();
+      sizeX = xSize;
+      sizeZ = zSize;
 
-      water_plane.resize(xSize*zSize);
-      indices.resize((xSize - 1) * (zSize - 1) * 6);
+      water_plane.resize(sizeX*sizeZ);
+      indices.resize((sizeX - 1) * (sizeZ - 1) * 6);
 
       // allocate vertices and indices into OpenGL buffers
       water_mesh->allocate(sizeof(my_vertex) * water_plane.size(), sizeof(uint32_t) * indices.size());
@@ -30,30 +41,15 @@ namespace octet {
       water_mesh->add_attribute(attribute_pos, 3, GL_FLOAT, 0);
       water_mesh->add_attribute(attribute_color, 4, GL_UNSIGNED_BYTE, 12, GL_TRUE);
 
-      // these write-only locks give access to the vertices and indices.
-      // they will be released at the next } (the end of the scope)
-      gl_resource::wolock vl(water_mesh->get_vertices());
-      my_vertex *vtx = (my_vertex *)vl.u8();
-
-      // generating a flat plane
-      for (int i = 0; i < water_plane.size(); ++i) {
-        float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
-
-        water_plane[i] = vec3p(i % xSize, -1, i / xSize);
-        vtx->pos = water_plane[i];
-        vtx->color = make_color(r, g, b);
-        vtx++;
-      }
-
       int i = 0;
-      for (int z = 0, t = 0; z < zSize - 1; ++z) {
-        for (int x = 0; x < xSize - 1; ++x) {
+      for (int z = 0, t = 0; z < sizeZ - 1; ++z) {
+        for (int x = 0; x < sizeX - 1; ++x) {
           indices[i] = t;
-          indices[i + 1] = t + xSize;
-          indices[i + 2] = t + xSize + 1;
+          indices[i + 1] = t + sizeX;
+          indices[i + 2] = t + sizeX + 1;
 
           indices[i + 3] = t;
-          indices[i + 4] = t + xSize + 1;
+          indices[i + 4] = t + sizeX + 1;
           indices[i + 5] = t + 1;
           i += 6;
           t++;
@@ -65,14 +61,23 @@ namespace octet {
       memcpy(indx, indices.data(), sizeof(uint32_t)*indices.size());
     }
 
-  public:
-    water_surface() {
-      init();
-    }
+    void AnimateWaves(float time) {
+      // these write-only locks give access to the vertices and indices.
+      // they will be released at the next } (the end of the scope)
+      gl_resource::wolock vl(water_mesh->get_vertices());
+      my_vertex *vtx = (my_vertex *)vl.u8();
 
-    ref<mesh> Get_Mesh() {
-      return water_mesh;
-    }
+      float height = 0.0f;
+      for (int i = 0; i < water_plane.size(); ++i) {
+        float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
 
+        water_plane[i] = vec3p((i % sizeX), -1, (i / sizeX) + time);
+        vtx->pos = water_plane[i];
+        vtx->color = make_color(r, g, b);
+        vtx++;
+        height++;
+      }
+
+    }
   };
 }

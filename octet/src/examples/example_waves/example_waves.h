@@ -12,7 +12,8 @@ namespace octet {
   class example_waves : public app {
     // scene for drawing box
     ref<visual_scene> app_scene;
-
+    water_surface waves;
+    float time;
   public:
     /// this is called when we construct the class before everything is initialised.
     example_waves(int argc, char **argv) : app(argc, argv) {
@@ -74,8 +75,9 @@ namespace octet {
       scene_node *node = new scene_node();
       app_scene->add_child(node);
 
-      water_surface w;
-      mesh *water = w.Get_Mesh();
+      time = 0.0f;
+      waves.init();
+      mesh *water = waves.Get_Mesh();
       app_scene->add_mesh_instance(new mesh_instance(node, water, colour));
     }
 
@@ -88,6 +90,8 @@ namespace octet {
 
       // update matrices. assume 30 fps.
       app_scene->update(1.0f/30);
+
+      waves.AnimateWaves(time+= 1.0f / 30);
 
       // draw the scene
       app_scene->render((float)vx / vy);
