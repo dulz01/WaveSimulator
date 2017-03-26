@@ -67,15 +67,17 @@ namespace octet {
       gl_resource::wolock vl(water_mesh->get_vertices());
       my_vertex *vtx = (my_vertex *)vl.u8();
 
-      float height = 0.0f;
+      float height = -1.0f;
       for (int i = 0; i < water_plane.size(); ++i) {
         float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
+        water_plane[i] = vec3p((i % sizeX), height, (i / sizeX));
+        height += 0.1f;
 
-        water_plane[i] = vec3p((i % sizeX), -1, (i / sizeX) + time);
+        if (height >= 2) { height = 0; }
+
         vtx->pos = water_plane[i];
         vtx->color = make_color(r, g, b);
         vtx++;
-        height++;
       }
 
     }
