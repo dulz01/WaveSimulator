@@ -7,6 +7,11 @@ namespace octet {
       uint32_t color;
     };
 
+    // this function converts three floats into a RGBA 8 bit color
+    static uint32_t make_color(float r, float g, float b) {
+      return 0xff000000 + ((int)(r*255.0f) << 0) + ((int)(g*255.0f) << 8) + ((int)(b*255.0f) << 16);
+    }
+
     ref<mesh> water_mesh;
     std::vector<vec3p> water_plane;
     std::vector<uint32_t> indices;
@@ -32,8 +37,11 @@ namespace octet {
 
       // generating a flat plane
       for (int i = 0; i < water_plane.size(); ++i) {
+        float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
+
         water_plane[i] = vec3p(i % xSize, -1, i / xSize);
         vtx->pos = water_plane[i];
+        vtx->color = make_color(r, g, b);
         vtx++;
       }
 

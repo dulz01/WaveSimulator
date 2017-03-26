@@ -69,7 +69,8 @@ namespace octet {
       camera.translate(50, 30, 100);
       camera.rotateX(-20);
 
-      material *colour = new material(vec4(0, 0, 1, 1));
+      param_shader *shader = new param_shader("shaders/default.vs", "shaders/simple_color.fs");
+      material *colour = new material(vec4(0, 0, 1, 1), shader);
       scene_node *node = new scene_node();
       app_scene->add_child(node);
 
