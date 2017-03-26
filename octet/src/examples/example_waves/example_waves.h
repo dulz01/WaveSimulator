@@ -49,16 +49,21 @@ namespace octet {
 
     /// this is called once OpenGL is initialized
     void app_init() {
-      app_scene =  new visual_scene();
+      app_scene = new visual_scene();
       app_scene->create_default_camera_and_lights();
+      app_scene->get_camera_instance(0)->set_far_plane(1000000.0f);
+      
+      mat4t &camera = app_scene->get_camera_instance(0)->get_node()->access_nodeToParent();
+      camera.translate(50, 30, 100);
+      camera.rotateX(-20);
 
-      material *red = new material(vec4(0, 0, 1, 1));
+      material *colour = new material(vec4(0, 0, 1, 1));
       scene_node *node = new scene_node();
       app_scene->add_child(node);
-      //app_scene->add_mesh_instance(new mesh_instance(node, box, red));
+
       water_surface w;
       mesh *water = w.Get_Mesh();
-      app_scene->add_mesh_instance(new mesh_instance(node, water, red));
+      app_scene->add_mesh_instance(new mesh_instance(node, water, colour));
     }
 
     /// this is called to draw the world
@@ -76,8 +81,6 @@ namespace octet {
 
       // tumble the box  (there is only one mesh instance)
       scene_node *node = app_scene->get_mesh_instance(0)->get_node();
-      //node->rotate(1, vec3(1, 0, 0));
-      //node->rotate(1, vec3(0, 1, 0));
     }
   };
 }
