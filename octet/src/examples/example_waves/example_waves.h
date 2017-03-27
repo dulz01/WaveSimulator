@@ -88,8 +88,15 @@ namespace octet {
       scene_node *node = new scene_node();
       app_scene->add_child(node);
 
+      int Width, Depth;
+      printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+      printf("Please set the size of the mesh.\nWidth: ");
+      std::cin >> Width;
+      printf("Depth: ");
+      std::cin >> Depth;
+
       time = 0.0f;
-      waves.init();
+      waves.init(Width, Depth);
       mesh *water = waves.Get_Mesh();
       app_scene->add_mesh_instance(new mesh_instance(node, water, colour));
     }
