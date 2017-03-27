@@ -107,9 +107,12 @@ namespace octet {
       app_scene->create_default_camera_and_lights();
       app_scene->get_camera_instance(0)->set_far_plane(1000000.0f);
       
+      // init camera position
       mat4t &camera = app_scene->get_camera_instance(0)->get_node()->access_nodeToParent();
       camera.translate(50, 80, 170);
       camera.rotateX(-20);
+
+      // init shaders
       param_shader *shader = new param_shader("shaders/default.vs", "shaders/simple_color.fs");
       material *colour = new material(vec4(0, 0, 1, 1), shader);
       scene_node *node = new scene_node();
@@ -117,6 +120,7 @@ namespace octet {
 
       time = 0.0f;
 
+      // Asks user to specify the size of the mesh
       int Width, Depth;
       printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
       printf("Please set the size of the mesh.\nWidth: ");

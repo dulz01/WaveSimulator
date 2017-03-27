@@ -14,7 +14,7 @@ namespace octet {
     std::vector<uint32_t> indices;
 
     // Wave variables
-    float height = 0.0f;
+    float height;
     float pi = 3.141592653f;
     float wavelength, amplitude, speed, frequency, phase;
 
@@ -24,15 +24,25 @@ namespace octet {
     }
 
   public:
-    water_surface() {}
-    water_surface(int xSize, int zSize) : sizeX(xSize), sizeZ(zSize) {}
+    water_surface() {
+      sizeX = 0;
+      sizeZ = 0;
+      height = 0.0f;
+      wavelength = 0.0f;
+      amplitude = 0.0f;
+      speed = 0.0f;
+      frequency = 0.0f;
+      phase = 0.0f;
+    }
 
+    // Getters
     ref<mesh> Get_Mesh() { return water_mesh; }
     int GetMeshWidth() { return sizeX; }
     int GetMeshDepth() { return sizeZ; }
     float GetWaveLength() { return wavelength; }
     float GetAmplitude() { return amplitude; }
 
+    // Setters
     void AdjustWaveLength(float num) { wavelength += num; }
     void AdjustAmplitude(float num) { amplitude += num; }
 
@@ -41,6 +51,7 @@ namespace octet {
       sizeX = xSize;
       sizeZ = zSize;
 
+      // preparing the buffers for OpenGL
       water_plane.resize(sizeX*sizeZ);
       indices.resize((sizeX - 1) * (sizeZ - 1) * 6);
 
@@ -71,6 +82,7 @@ namespace octet {
       uint32_t *indx = il.u32();
       memcpy(indx, indices.data(), sizeof(uint32_t)*indices.size());
 
+      // Default values for the wave
       wavelength = 16;
       amplitude = 1.0f;
       speed = 1.0f;
@@ -90,6 +102,7 @@ namespace octet {
       for (int i = 0; i < water_plane.size(); ++i) {
         float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
 
+        // Sine Wave formula
         height = amplitude * sinf(2 * pi * frequency * time + phase);
         time += 0.1f;
 
