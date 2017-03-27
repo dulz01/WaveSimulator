@@ -19,7 +19,7 @@ namespace octet {
     example_waves(int argc, char **argv) : app(argc, argv) {
     }
 
-    void KeyboardInputControl() {
+    void KeyboardInput() {
       if (is_key_down(key::key_esc)) {
         exit(1);
       }
@@ -137,7 +137,7 @@ namespace octet {
 
     /// this is called to draw the world
     void draw_world(int x, int y, int w, int h) {
-      KeyboardInputControl();
+      KeyboardInput();
       int vx = 0, vy = 0;
       get_viewport_size(vx, vy);
       app_scene->begin_render(vx, vy);
@@ -149,9 +149,6 @@ namespace octet {
 
       // draw the scene
       app_scene->render((float)vx / vy);
-
-      // tumble the box  (there is only one mesh instance)
-      scene_node *node = app_scene->get_mesh_instance(0)->get_node();
     }
   };
 }
