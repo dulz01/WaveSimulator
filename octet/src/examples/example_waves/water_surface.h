@@ -28,10 +28,13 @@ namespace octet {
     water_surface(int xSize, int zSize) : sizeX(xSize), sizeZ(zSize) {}
 
     ref<mesh> Get_Mesh() { return water_mesh; }
+    int GetMeshWidth() { return sizeX; }
+    int GetMeshDepth() { return sizeZ; }
+    float GetWaveLength() { return wavelength; }
+    float GetAmplitude() { return amplitude; }
 
     void AdjustWaveLength(float num) { wavelength += num; }
     void AdjustAmplitude(float num) { amplitude += num; }
-    void AdjustSpeed(float num) { speed += num; }
 
     void init(int xSize = 100, int zSize = 100) {
       water_mesh = new mesh();

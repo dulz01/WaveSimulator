@@ -32,16 +32,16 @@ namespace octet {
       if (is_key_down('D')) { camera.translate(increment, 0, 0); }
 
       // Translate camera - Y-axis
-      if (is_key_down('W')) { camera.translate(0, increment, 0); }
-      if (is_key_down('S')) { camera.translate(0, -increment, 0); }
+      if (is_key_down('Q')) { camera.translate(0, increment, 0); }
+      if (is_key_down('E')) { camera.translate(0, -increment, 0); }
 
       // Translate camera - Z-axis
-      if (is_key_down('E')) { camera.translate(0, 0, -increment); }
-      if (is_key_down('Q')) { camera.translate(0, 0, increment); }
+      if (is_key_down('W')) { camera.translate(0, 0, -increment); }
+      if (is_key_down('S')) { camera.translate(0, 0, increment); }
       
       // Rotate camera - X-axis
-      if (is_key_down('Z')) { camera.rotateX(-increment); }
-      if (is_key_down('X')) { camera.rotateX(increment); }
+      if (is_key_down('Z')) { camera.rotateX(increment); }
+      if (is_key_down('X')) { camera.rotateX(-increment); }
 
       // Rotate camera - Y axis
       if (is_key_down('C')) { camera.rotateY(increment); }
@@ -52,14 +52,27 @@ namespace octet {
       if (is_key_down('F')) { camera.rotateZ(-increment); }
 
       // Adjust wave parameters
-      if (is_key_going_down('1')) { waves.AdjustWaveLength(-increment); }
-      if (is_key_going_down('2')) { waves.AdjustWaveLength(increment); }
+      // Wave length
+      if (is_key_going_down('1')) { 
+        waves.AdjustWaveLength(-increment);
+        PrintUI();
+      }
 
-      if (is_key_going_down('3')) { waves.AdjustAmplitude(-increment); }
-      if (is_key_going_down('4')) { waves.AdjustAmplitude(increment); }
+      if (is_key_going_down('2')) {
+        waves.AdjustWaveLength(increment);
+        PrintUI();
+      }
 
-      if (is_key_going_down('5')) { waves.AdjustSpeed(-increment); }
-      if (is_key_going_down('6')) { waves.AdjustSpeed(increment); }
+      // Amplitude
+      if (is_key_going_down('3')) {
+        waves.AdjustAmplitude(-0.25f);
+        PrintUI();
+      }
+
+      if (is_key_going_down('4')) {
+        waves.AdjustAmplitude(0.25f);
+        PrintUI();
+      }
 
       // Set wireframe on or off
       static bool wireframe = false;
@@ -72,6 +85,20 @@ namespace octet {
           glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
       }
+    }
+
+    void PrintUI() {
+      printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+      printf("Use WSAD to move the camera\n");
+      printf("Press Q to raise the camera\n");
+      printf("Press E to lower the camera\n");
+      printf("Press Z to rotate the camera up\n");
+      printf("Press X to rotate the camera down\n");
+      printf("Press C to rotate the camera left\n");
+      printf("Press V to rotate the camera right\n");
+      printf("Press the space bar to toggle wireframe.");
+      printf("\n_____________________\n");
+      printf("Width: %d\nDepth: %d\nWaveLength: %f\nAmplitude: %f\n", waves.GetMeshWidth(), waves.GetMeshDepth(), waves.GetWaveLength(), waves.GetAmplitude());
     }
 
     /// this is called once OpenGL is initialized
@@ -88,17 +115,20 @@ namespace octet {
       scene_node *node = new scene_node();
       app_scene->add_child(node);
 
+      time = 0.0f;
+
       int Width, Depth;
       printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
       printf("Please set the size of the mesh.\nWidth: ");
       std::cin >> Width;
       printf("Depth: ");
       std::cin >> Depth;
-
-      time = 0.0f;
       waves.init(Width, Depth);
+
       mesh *water = waves.Get_Mesh();
       app_scene->add_mesh_instance(new mesh_instance(node, water, colour));
+
+      PrintUI();
     }
 
     /// this is called to draw the world
@@ -112,7 +142,6 @@ namespace octet {
       app_scene->update(1.0f/30);
 
       waves.AnimateWaves(time += 1.0f/30);
-
 
       // draw the scene
       app_scene->render((float)vx / vy);
