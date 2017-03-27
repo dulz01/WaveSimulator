@@ -6,7 +6,7 @@ namespace octet {
       vec3p pos;
       uint32_t color;
     };
-    
+
     // Mesh variables
     int sizeX, sizeZ;
     ref<mesh> water_mesh;
@@ -67,6 +67,12 @@ namespace octet {
       gl_resource::wolock il(water_mesh->get_indices());
       uint32_t *indx = il.u32();
       memcpy(indx, indices.data(), sizeof(uint32_t)*indices.size());
+
+      wavelength = 16;
+      amplitude = 1.0f;
+      speed = 1.0f;
+      frequency = (2 * pi) / wavelength;
+      phase = speed * frequency;
     }
 
     void AnimateWaves(float time) {
@@ -75,18 +81,13 @@ namespace octet {
       gl_resource::wolock vl(water_mesh->get_vertices());
       my_vertex *vtx = (my_vertex *)vl.u8();
 
-      wavelength = 16;
-      amplitude = 0.4f;
-      speed = 1.0f;
-      direction = vec2();
-      frequency = (2 * pi) / wavelength;
-      phase = speed * frequency;
-
       for (int i = 0; i < water_plane.size(); ++i) {
         float r = 0.0f, g = 1.0f * i / water_plane.size(), b = 1.0f;
 
-        height = amplitude * sinf(pi * direction.dot(vec2(i % sizeX, i / sizeX)) * frequency + time * phase);
-        water_plane[i] = vec3p((i % sizeX), height , (i / sizeX));
+        height = amplitude * sinf(2 * pi * frequency * time + phase);
+        time += 0.1f;
+
+        water_plane[i] = vec3p((i % sizeX), height, (i / sizeX));
 
         vtx->pos = water_plane[i];
         vtx->color = make_color(r, g, b);

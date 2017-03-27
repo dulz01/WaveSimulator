@@ -91,11 +91,8 @@ namespace octet {
       // update matrices. assume 30 fps.
       app_scene->update(1.0f/30);
 
-      waves.AnimateWaves(time+= 1.0f / 30);
+      waves.AnimateWaves(time += 1.0f/30);
 
-      if (time > 30) {
-        time = 0;
-      }
 
       // draw the scene
       app_scene->render((float)vx / vy);
