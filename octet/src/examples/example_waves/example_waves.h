@@ -24,28 +24,42 @@ namespace octet {
         exit(1);
       }
 
-      float speed = 1;
+      float increment = 1;
       mat4t &camera = app_scene->get_camera_instance(0)->get_node()->access_nodeToParent();
       
       // Translate camera - X-axis
-      if (is_key_down('A')) { camera.translate(-speed, 0, 0); }
-      if (is_key_down('D')) { camera.translate(speed, 0, 0); }
+      if (is_key_down('A')) { camera.translate(-increment, 0, 0); }
+      if (is_key_down('D')) { camera.translate(increment, 0, 0); }
 
       // Translate camera - Y-axis
-      if (is_key_down('W')) { camera.translate(0, speed, 0); }
-      if (is_key_down('S')) { camera.translate(0, -speed, 0); }
+      if (is_key_down('W')) { camera.translate(0, increment, 0); }
+      if (is_key_down('S')) { camera.translate(0, -increment, 0); }
 
       // Translate camera - Z-axis
-      if (is_key_down('E')) { camera.translate(0, 0, -speed); }
-      if (is_key_down('Q')) { camera.translate(0, 0, speed); }
+      if (is_key_down('E')) { camera.translate(0, 0, -increment); }
+      if (is_key_down('Q')) { camera.translate(0, 0, increment); }
       
       // Rotate camera - X-axis
-      if (is_key_down('Z')) { camera.rotateX(-speed); }
-      if (is_key_down('X')) { camera.rotateX(speed); }
+      if (is_key_down('Z')) { camera.rotateX(-increment); }
+      if (is_key_down('X')) { camera.rotateX(increment); }
 
       // Rotate camera - Y axis
-      if (is_key_down('C')) { camera.rotateY(speed); }
-      if (is_key_down('V')) { camera.rotateY(-speed); }
+      if (is_key_down('C')) { camera.rotateY(increment); }
+      if (is_key_down('V')) { camera.rotateY(-increment); }
+
+      // Rotate camera - Y axis
+      if (is_key_down('R')) { camera.rotateZ(increment); }
+      if (is_key_down('F')) { camera.rotateZ(-increment); }
+
+      // Adjust wave parameters
+      if (is_key_going_down('1')) { waves.AdjustWaveLength(-increment); }
+      if (is_key_going_down('2')) { waves.AdjustWaveLength(increment); }
+
+      if (is_key_going_down('3')) { waves.AdjustAmplitude(-increment); }
+      if (is_key_going_down('4')) { waves.AdjustAmplitude(increment); }
+
+      if (is_key_going_down('5')) { waves.AdjustSpeed(-increment); }
+      if (is_key_going_down('6')) { waves.AdjustSpeed(increment); }
 
       // Set wireframe on or off
       static bool wireframe = false;
@@ -67,9 +81,8 @@ namespace octet {
       app_scene->get_camera_instance(0)->set_far_plane(1000000.0f);
       
       mat4t &camera = app_scene->get_camera_instance(0)->get_node()->access_nodeToParent();
-      camera.translate(50, 30, 100);
+      camera.translate(50, 80, 170);
       camera.rotateX(-20);
-
       param_shader *shader = new param_shader("shaders/default.vs", "shaders/simple_color.fs");
       material *colour = new material(vec4(0, 0, 1, 1), shader);
       scene_node *node = new scene_node();

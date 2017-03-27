@@ -18,8 +18,6 @@ namespace octet {
     float pi = 3.141592653f;
     float wavelength, amplitude, speed, frequency, phase;
 
-    vec2 direction;
-
     // this function converts three floats into a RGBA 8 bit color
     static uint32_t make_color(float r, float g, float b) {
       return 0xff000000 + ((int)(r*255.0f) << 0) + ((int)(g*255.0f) << 8) + ((int)(b*255.0f) << 16);
@@ -29,9 +27,11 @@ namespace octet {
     water_surface() {}
     water_surface(int xSize, int zSize) : sizeX(xSize), sizeZ(zSize) {}
 
-    ref<mesh> Get_Mesh() {
-      return water_mesh;
-    }
+    ref<mesh> Get_Mesh() { return water_mesh; }
+
+    void AdjustWaveLength(float num) { wavelength += num; }
+    void AdjustAmplitude(float num) { amplitude += num; }
+    void AdjustSpeed(float num) { speed += num; }
 
     void init(int xSize = 100, int zSize = 100) {
       water_mesh = new mesh();
@@ -76,6 +76,9 @@ namespace octet {
     }
 
     void AnimateWaves(float time) {
+      frequency = (2 * pi) / wavelength;
+      phase = speed * frequency;
+
       // these write-only locks give access to the vertices and indices.
       // they will be released at the next } (the end of the scope)
       gl_resource::wolock vl(water_mesh->get_vertices());
